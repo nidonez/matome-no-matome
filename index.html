@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO対策 -->
+    <title>まとめのまとめ - 2ch・5chまとめの厳選アンテナサイト</title>
+    <meta name="description" content="ネット上の人気まとめ記事を、ニュース、海外の反応、ネタ、スポーツ、アイドルなどジャンル別に厳選してお届けするアンテナサイト「まとめのまとめ」です。">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .active-tab { border-bottom: 4px solid #f97316; color: #f97316; }
+        .sub-nav-active { color: white; background-color: #f97316; border-radius: 9999px; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-blue-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center cursor-pointer" onclick="location.reload()">
+                <!-- 猫の顔アイコン (SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-orange-400">
+                    <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.27.73 2.52.73 4 0 3.33-2.17 6-5 6H8.27c-2.83 0-5-2.67-5-6 0-1.48.16-2.73.73-4 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26Z"/>
+                    <path d="M8 14s.5 1.5 2 1.5 2-1.5 2-1.5"/>
+                    <path d="M14 14s.5 1.5 2 1.5 2-1.5 2-1.5"/>
+                    <path d="M9.5 11h.01"/>
+                    <path d="M14.5 11h.01"/>
+                </svg>
+                まとめのまとめ
+            </h1>
+            <div class="text-[10px] bg-blue-800 px-3 py-1 rounded-full border border-blue-500">
+                <span id="data-status">同期待機中</span>
+            </div>
+        </div>
+        
+        <!-- Main Categories -->
+        <div class="bg-blue-900 overflow-x-auto hide-scrollbar border-t border-blue-800">
+            <nav class="max-w-5xl mx-auto flex text-[11px] font-bold whitespace-nowrap" id="category-nav"></nav>
+        </div>
+        
+        <!-- Sub Categories (Dynamic) -->
+        <div id="sub-category-bar" class="bg-blue-800 border-t border-blue-700 hidden">
+            <nav class="max-w-5xl mx-auto px-3 py-2 flex gap-2 text-[10px] overflow-x-auto hide-scrollbar" id="sub-nav"></nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <!-- Timeframe Tabs -->
+            <div class="bg-white rounded-t-xl flex shadow-sm overflow-hidden border-b">
+                <button onclick="changeTimeframe('new')" id="tab-new" class="tab-btn flex-1 py-4 text-[13px] font-bold active-tab">新着順</button>
+                <button onclick="changeTimeframe('daily')" id="tab-daily" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">日間</button>
+                <button onclick="changeTimeframe('weekly')" id="tab-weekly" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">週間</button>
+                <button onclick="changeTimeframe('total')" id="tab-total" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">トータル</button>
+            </div>
+
+            <div id="article-list" class="bg-white rounded-b-xl shadow-sm divide-y divide-gray-100 min-h-[500px]">
+                <div class="p-20 text-center text-gray-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-4"></i><br>
+                    最新記事を読み込み中...
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <h2 class="font-bold border-b pb-2 mb-3 text-sm text-blue-800">サイトについて</h2>
+                <p class="text-[11px] text-gray-500 leading-relaxed">
+                    独自フィルタにより厳選された人気記事のみを届ける、猫が目印のアンテナサイトです。ニュース、海外の反応、ネタ、アイドルまで、ネットの今を網羅。
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="font-bold border-b pb-2 mb-3 text-sm text-gray-700">配信中の人気サイト</h3>
+                <div id="site-list" class="text-[10px] grid grid-cols-2 gap-x-2 gap-y-1 text-gray-400"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="font-bold border-b pb-2 mb-3 text-sm text-blue-800">ランキングの仕組み</h3>
+                <div class="text-[11px] text-gray-600 space-y-2">
+                    <p><strong>新着順:</strong> 現在進行形で注目されている記事</p>
+                    <p><strong>日間/週間:</strong> 一定期間で特に反響があった記事</p>
+                    <p><strong>トータル:</strong> 全期間で最も多くの反応を得た名作記事</p>
+                </div>
+            </div>
+
+            <!-- Ad Space -->
+            <div class="bg-gray-200 h-64 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300">
+                <span class="text-gray-400 text-xs font-bold text-center">AD AREA</span>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Mobile Ad -->
+    <div class="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-2 z-50 flex justify-center items-center h-14 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+        <div class="bg-gray-100 w-[320px] h-[50px] flex items-center justify-center border border-dashed border-gray-300">
+            <span class="text-[10px] text-gray-400 font-bold">AD 320x50</span>
+        </div>
+    </div>
+
+    <footer class="py-20 text-center text-gray-400 text-[10px]">
+        &copy; 2026 まとめのまとめ - Hatena Filter Edition
+    </footer>
+
+    <script>
+        // --- 設定 ---
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxWKgMM234MQ09NSYDb7e5JcRZXrpuyX-I6LYDHX_pPWpl6xLnKKlPH_pNQs4AmP-wF/exec"; // ここにデプロイしたGASのURLを貼り付けてください
+
+        const whiteList = [
+            // ニュース
+            { name: '痛いニュース', domain: 'blog.livedoor.jp/dqnplus', cat: 'ニュース', sub: '話題の事件' },
+            { name: '政経ch', domain: 'seikeich.com', cat: 'ニュース', sub: '政治・経済' },
+            { name: '国内ニュースまとめ', domain: 'news-matome.jp', cat: 'ニュース', sub: '国内' },
+            { name: '海外ニュース速報', domain: 'world-news.net', cat: 'ニュース', sub: '海外' },
+
+            // 海外の反応
+            { name: 'パンドラの憂鬱', domain: 'kaigainohannoublog.blog55.fc2.com', cat: '海外の反応', sub: '日本への反応' },
+            { name: 'どんぐりこ', domain: 'donguriko.com', cat: '海外の反応', sub: '海外で人気の話題' },
+
+            // ネタ・議論
+            { name: 'VIPPER速報', domain: 'vippers.jp', cat: 'ネタ・議論', sub: '笑えるネタ' },
+            { name: '鬼女まとめ', domain: 'kijo-matome.com', cat: 'ネタ・議論', sub: '男女・フェミ' },
+            { name: '炎上速報', domain: 'enjou-sokuhou.jp', cat: 'ネタ・議論', sub: '炎上・ゴシップ' },
+            { name: '保守速報', domain: 'hosyusokuhou.jp', cat: 'ネタ・議論', sub: '政治思想(右/左)' },
+
+            // スポーツ
+            { name: 'なんJスタジアム', domain: 'blog.livedoor.jp/nanjstu', cat: 'スポーツ', sub: '野球' },
+            { name: 'フットボール速報', domain: 'football-sokuhou.com', cat: 'スポーツ', sub: 'サッカー' },
+            { name: '筋トレ速報', domain: 'kintore-sokuhou.jp', cat: 'スポーツ', sub: '筋トレ' },
+
+            // ライフ・マネー
+            { name: '不思議.net', domain: 'world-fusigi.net', cat: 'ライフ・マネー', sub: '生活・雑学' },
+            { name: '仮想通貨速報', domain: 'v-currency.com', cat: 'ライフ・マネー', sub: '資産・投資' },
+            { name: '節約ログ', domain: 'setsuyaku-blog.jp', cat: 'ライフ・マネー', sub: '家計・ポイ活' },
+
+            // 女性アイドル
+            { name: '乃木坂46まとめの仮', domain: 'nogizaka46tiu.com', cat: '女性アイドル', sub: '国内' },
+            { name: '櫻坂46まとめ', domain: 'sakurazaka46matome.com', cat: '女性アイドル', sub: '国内' },
+            { name: 'デバク', domain: 'daebak.tokyo', cat: '女性アイドル', sub: '韓流' },
+
+            // 男性アイドル
+            { name: 'マゼンタ速報', domain: 'magentasokuhou.com', cat: '男性アイドル', sub: '国内' },
+            { name: 'K-POP男性まとめ', domain: 'kbps.jp', cat: '男性アイドル', sub: '韓流' },
+
+            // オカルト
+            { name: '洒落怖まとめ', domain: 'sharekowa.net', cat: 'オカルト', sub: '怖い話' },
+            { name: 'オカルト考察', domain: 'okakuro.org', cat: 'オカルト', sub: '不思議・考察' },
+
+            // 動画・配信
+            { name: 'VTuberまとめ', domain: 'vtuber-matome.com', cat: '動画・配信', sub: 'VTuber' },
+            { name: 'YouTuber速報', domain: 'youtuber-sokuhou.com', cat: '動画・配信', sub: 'YouTuber' }
+        ];
+
+        const categories = [
+            'すべて', 'ニュース', '海外の反応', 'ネタ・議論', 'スポーツ', 
+            'ライフ・マネー', '女性アイドル', '男性アイドル', 'オカルト', '動画・配信'
+        ];
+        
+        const subNavMap = {
+            'ニュース': ['すべて', '話題の事件', '国内', '海外', '政治・経済'],
+            '海外の反応': ['すべて', '海外で人気の話題', '日本への反応'],
+            'ネタ・議論': ['すべて', '笑えるネタ', '炎上・ゴシップ', '男女・フェミ', '政治思想(右/左)'],
+            'スポーツ': ['すべて', '野球', 'サッカー', '筋トレ', 'その他'],
+            'ライフ・マネー': ['すべて', '生活・雑学', '資産・投資', '家計・ポイ活', '仕事・副業'],
+            '女性アイドル': ['すべて', '国内', '韓流'],
+            '男性アイドル': ['すべて', '国内', '韓流'],
+            'オカルト': ['すべて', '怖い話', '不思議・考察'],
+            '動画・配信': ['すべて', 'YouTuber', 'VTuber', '面白動画']
+        };
+
+        let currentTab = 'new';
+        let currentCategory = 'すべて';
+        let currentSubCategory = 'すべて';
+
+        const fetchArticles = async () => {
+            const listEl = document.getElementById('article-list');
+            const statusEl = document.getElementById('data-status');
+            if (!listEl) return;
+
+            listEl.innerHTML = '<div class="p-20 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-4"></i><br>同期中...</div>';
+            statusEl.textContent = "同期中...";
+
+            try {
+                if (!GAS_URL) throw new Error("GAS_URL未設定");
+                
+                const response = await fetch(`${GAS_URL}?tab=${currentTab}`);
+                const data = await response.json();
+
+                const filtered = data.filter(item => {
+                    const site = whiteList.find(s => item.link.includes(s.domain));
+                    if (!site) return false;
+                    if (currentCategory !== 'すべて' && site.cat !== currentCategory) return false;
+                    if (subNavMap[currentCategory] && currentSubCategory !== 'すべて') {
+                        if (site.sub !== currentSubCategory) return false;
+                    }
+                    return true;
+                });
+
+                listEl.innerHTML = '';
+                statusEl.textContent = "同期完了";
+
+                if (filtered.length === 0) {
+                    listEl.innerHTML = '<div class="p-20 text-center text-gray-400 text-sm">該当する記事はありません。</div>';
+                    return;
+                }
+
+                filtered.forEach((item, index) => {
+                    const site = whiteList.find(s => item.link.includes(s.domain));
+                    const rankHtml = currentTab !== 'new' ? `<div class="absolute -top-1 -left-1 w-5 h-5 bg-orange-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold z-10 shadow-sm">${index+1}</div>` : '';
+                    const thumbId = btoa(item.link).slice(-10);
+                    
+                    const html = `
+                        <a href="${item.link}" target="_blank" class="block p-4 hover:bg-gray-50 transition relative group border-b border-gray-50 last:border-0">
+                            ${rankHtml}
+                            <div class="flex gap-4">
+                                <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                                    <img src="https://picsum.photos/seed/${thumbId}/150/100" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="thumb">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-[10px] text-gray-400 mb-1 flex justify-between">
+                                        <span class="font-bold text-gray-600">${site.name}</span>
+                                        <span>${timeAgo(new Date(item.date))}</span>
+                                    </div>
+                                    <h2 class="text-sm font-bold text-blue-700 leading-snug line-clamp-2 mb-2 group-hover:underline">${item.title}</h2>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded border border-blue-100 font-bold">B! ${item.hatebu}</span>
+                                        <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">${site.cat}${site.sub ? ' / ' + site.sub : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>`;
+                    listEl.insertAdjacentHTML('beforeend', html);
+                });
+            } catch (err) {
+                listEl.innerHTML = `<div class="p-10 text-center text-red-400 text-sm">同期エラー</div>`;
+                statusEl.textContent = "エラー";
+            }
+        };
+
+        const changeTimeframe = (tab) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab', 'text-gray-500'));
+            const activeTab = document.getElementById('tab-' + tab);
+            if (activeTab) activeTab.classList.add('active-tab');
+            currentTab = tab;
+            fetchArticles();
+        };
+
+        const renderNav = () => {
+            const nav = document.getElementById('category-nav');
+            if (!nav) return;
+            nav.innerHTML = '';
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-3 transition ${currentCategory === cat ? 'text-orange-400 border-b-2 border-orange-400' : 'text-blue-200 hover:text-white'}`;
+                btn.textContent = cat;
+                btn.onclick = () => { 
+                    currentCategory = cat; 
+                    currentSubCategory = 'すべて';
+                    renderNav(); 
+                    renderSubNav();
+                    fetchArticles(); 
+                };
+                nav.appendChild(btn);
+            });
+        };
+
+        const renderSubNav = () => {
+            const subBar = document.getElementById('sub-category-bar');
+            const subNav = document.getElementById('sub-nav');
+            const subItems = subNavMap[currentCategory];
+            
+            if (subItems) {
+                subBar.classList.remove('hidden');
+                subNav.innerHTML = '';
+                subItems.forEach(sub => {
+                    const btn = document.createElement('button');
+                    const isActive = currentSubCategory === sub;
+                    btn.className = `px-3 py-1 whitespace-nowrap border border-blue-600 transition ${isActive ? 'sub-nav-active' : 'text-blue-200 hover:text-white'}`;
+                    btn.textContent = sub;
+                    btn.onclick = () => {
+                        currentSubCategory = sub;
+                        renderSubNav();
+                        fetchArticles();
+                    };
+                    subNav.appendChild(btn);
+                });
+            } else {
+                subBar.classList.add('hidden');
+            }
+        };
+
+        const timeAgo = (date) => {
+            if (isNaN(date.getTime())) return "不明";
+            const diff = (new Date() - date) / 1000;
+            if (diff < 3600) return Math.floor(Math.max(1, diff/60)) + '分前';
+            if (diff < 86400) return Math.floor(diff/3600) + '時間前';
+            return Math.floor(diff/86400) + '日前';
+        };
+
+        window.onload = () => {
+            renderNav();
+            renderSubNav();
+            const siteListEl = document.getElementById('site-list');
+            if (siteListEl) {
+                const uniqueSites = [...new Set(whiteList.map(s => s.name))];
+                uniqueSites.forEach(name => siteListEl.insertAdjacentHTML('beforeend', `<div>・${name}</div>`));
+            }
+            fetchArticles();
+        };
+    </script>
+</body>
+</html>
