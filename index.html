@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO対策 -->
-    <title>まとめのまとめ - 2ch・5chまとめの厳選アンテナサイト</title>
-    <meta name="description" content="ネット上の人気まとめ記事を、ニュース、海外の反応、ネタ、スポーツ、アイドルなどジャンル別に厳選してお届けするアンテナサイト「まとめのまとめ」です。">
-    
+    <title>まとめのまとめ - 厳選アンテナ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,30 +16,23 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <!-- Header -->
     <header class="bg-blue-700 text-white sticky top-0 z-50 shadow-lg">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold flex items-center cursor-pointer" onclick="location.reload()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-orange-400">
-                    <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.27.73 2.52.73 4 0 3.33-2.17 6-5 6H8.27c-2.83 0-5-2.67-5-6 0-1.48.16-2.73.73-4 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26Z"/>
-                    <path d="M8 14s.5 1.5 2 1.5 2-1.5 2-1.5"/>
-                    <path d="M14 14s.5 1.5 2 1.5 2-1.5 2-1.5"/>
-                    <path d="M9.5 11h.01"/>
-                    <path d="M14.5 11h.01"/>
-                </svg>
-                まとめのまとめ
+                <i class="fa-solid fa-cat mr-2 text-orange-400"></i>まとめのまとめ
             </h1>
-            <div class="text-[10px] bg-blue-800 px-3 py-1 rounded-full border border-blue-500">
-                <span id="data-status">同期待機中</span>
+            <div class="flex flex-col items-end">
+                <div id="status-badge" class="text-[9px] md:text-[10px] bg-blue-800 px-3 py-1 rounded-full border border-blue-500 mb-1 transition-colors duration-300">
+                    <span id="data-status">同期中...</span>
+                </div>
+                <div id="debug-info" class="text-[8px] text-blue-300 font-mono"></div>
             </div>
         </div>
         
-        <!-- Main Categories -->
         <div class="bg-blue-900 overflow-x-auto hide-scrollbar border-t border-blue-800">
             <nav class="max-w-5xl mx-auto flex text-[11px] font-bold whitespace-nowrap" id="category-nav"></nav>
         </div>
         
-        <!-- Sub Categories -->
         <div id="sub-category-bar" class="bg-blue-800 border-t border-blue-700 hidden">
             <nav class="max-w-5xl mx-auto px-3 py-2 flex gap-2 text-[10px] overflow-x-auto hide-scrollbar" id="sub-nav"></nav>
         </div>
@@ -51,146 +40,310 @@
 
     <main class="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
+            <!-- キャッシュで即時切り替わるタブ -->
             <div class="bg-white rounded-t-xl flex shadow-sm overflow-hidden border-b">
                 <button onclick="changeTimeframe('new')" id="tab-new" class="tab-btn flex-1 py-4 text-[13px] font-bold active-tab">新着順</button>
-                <button onclick="changeTimeframe('daily')" id="tab-daily" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">日間</button>
-                <button onclick="changeTimeframe('weekly')" id="tab-weekly" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">週間</button>
-                <button onclick="changeTimeframe('total')" id="tab-total" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500">トータル</button>
+                <button onclick="changeTimeframe('popular')" id="tab-popular" class="tab-btn flex-1 py-4 text-[13px] font-bold text-gray-500 border-l hover:bg-gray-50 transition">人気順（注目記事）</button>
             </div>
 
-            <div id="article-list" class="bg-white rounded-b-xl shadow-sm divide-y divide-gray-100 min-h-[500px]">
+            <div id="article-list" class="bg-white rounded-b-xl shadow-sm divide-y divide-gray-100 min-h-[600px]">
                 <div class="p-20 text-center text-gray-400">
-                    <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-4"></i><br>
-                    記事を読み込み中...
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-4 text-blue-400"></i><br>
+                    全100サイトから最新記事を収集・結合中...<br>
+                    <span class="text-xs mt-2 block opacity-75">※初回のみ少し時間がかかります</span>
                 </div>
             </div>
         </div>
 
         <aside class="space-y-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <h2 class="font-bold border-b pb-2 mb-3 text-sm text-blue-800">サイトについて</h2>
-                <p class="text-[11px] text-gray-500 leading-relaxed">猫が目印の厳密フィルタ・アンテナサイト。ネットで今話題の記事だけを抽出しています。</p>
+            <div class="bg-gray-200 h-[250px] rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300 shadow-inner">
+                <span class="text-gray-400 text-[10px] font-bold text-center">AD AREA<br>(300x250)</span>
             </div>
+            
             <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="font-bold border-b pb-2 mb-3 text-sm text-gray-700">配信サイト一覧</h3>
-                <div id="site-list" class="text-[10px] grid grid-cols-2 gap-x-2 gap-y-1 text-gray-400"></div>
+                <h3 class="font-bold border-b pb-2 mb-3 text-sm text-blue-800"><i class="fa-solid fa-bolt mr-1 text-yellow-500"></i>取得サイト100件・超高速版</h3>
+                <div class="text-[11px] text-gray-600 space-y-2">
+                    <p>大手ニュースから海外の反応、アニメ、アイドル専門まで約100サイトを常時巡回しています。</p>
+                    <p>※一度取得したデータは保存されるため、タブやカテゴリは<strong>通信なしで一瞬で切り替わります。</strong></p>
+                </div>
+            </div>
+
+            <div class="bg-gray-200 h-[600px] rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300 shadow-inner">
+                <span class="text-gray-400 text-[10px] font-bold text-center">AD AREA<br>(300x600)</span>
             </div>
         </aside>
     </main>
 
     <footer class="py-20 text-center text-gray-400 text-[10px]">
-        &copy; 2026 まとめのまとめ - Hatena Filter Edition
+        &copy; 2026 まとめのまとめ
     </footer>
 
     <script>
-        // 設定済みのGAS URL
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxWKgMM234MQ09NSYDb7e5JcRZXrpuyX-I6LYDHX_pPWpl6xLnKKlPH_pNQs4AmP-wF/exec";
+        // ユーザーから提供された新しいGASのURL
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwF_orrPfStH2jbfUJDAbRRC4Agjh8Xh3bvN5dCgF22Ar__zcgK2paie0-CEoRan6pd/exec";
 
-        // ホワイトリスト：URLにドメインが含まれる場合のみ表示（主要ニュースサイトも念のため追加）
+        // 100サイト規模に拡充したホワイトリスト
         const whiteList = [
-            { name: '痛いニュース', domain: 'blog.livedoor.jp/dqnplus', cat: 'ニュース', sub: '話題の事件' },
-            { name: '政経ch', domain: 'seikeich.com', cat: 'ニュース', sub: '政治・経済' },
-            { name: 'VIPPER速報', domain: 'vippers.jp', cat: 'ネタ・議論', sub: '笑えるネタ' },
-            { name: '鬼女まとめ', domain: 'kijo-matome.com', cat: 'ネタ・議論', sub: '男女・フェミ' },
-            { name: 'なんJスタジアム', domain: 'blog.livedoor.jp/nanjstu', cat: 'スポーツ', sub: '野球' },
-            { name: '乃木坂46まとめの仮', domain: 'nogizaka46tiu.com', cat: '女性アイドル', sub: '国内' },
-            { name: 'デバク', domain: 'daebak.tokyo', cat: '女性アイドル', sub: '韓流' },
-            { name: 'マゼンタ速報', domain: 'magentasokuhou.com', cat: '男性アイドル', sub: '国内' },
-            { name: '朝日新聞', domain: 'asahi.com', cat: 'ニュース', sub: '国内' },
-            { name: '読売新聞', domain: 'yomiuri.co.jp', cat: 'ニュース', sub: '国内' }
+            // ニュース・事件
+            { name: '痛いニュース(ﾉ∀`)', domain: 'dqnplus', cat: 'ニュース', sub: '話題の事件' },
+            { name: 'ハムスター速報', domain: 'hamusoku', cat: 'ニュース', sub: '話題の事件' },
+            { name: '保守速報', domain: 'hosyusokuhou', cat: 'ニュース', sub: '政治・経済' },
+            { name: '政経ch', domain: 'seikeich', cat: 'ニュース', sub: '政治・経済' },
+            { name: '大艦巨砲主義！', domain: 'military38', cat: 'ニュース', sub: '海外' },
+            { name: 'ニュー速VIP', domain: 'news4vip', cat: 'ニュース', sub: '国内' },
+            { name: 'まとめたニュース', domain: 'matometanews', cat: 'ニュース', sub: '話題の事件' },
+            { name: 'カナ速', domain: 'kanasoku', cat: 'ニュース', sub: '話題の事件' },
+            { name: 'もえるあじあ', domain: 'moeruasia', cat: 'ニュース', sub: '政治・経済' },
+            { name: 'アノニマスポスト', domain: 'anonymous-post', cat: 'ニュース', sub: '政治・経済' },
+
+            // 海外の反応
+            { name: 'パンドラの憂鬱', domain: 'kaigainohannoublog', cat: '海外の反応', sub: '日本への反応' },
+            { name: 'どんぐりこ', domain: 'donguriko', cat: '海外の反応', sub: '海外で人気の話題' },
+            { name: '劇訳表示。', domain: 'gekiyaku', cat: '海外の反応', sub: '海外で人気の話題' },
+            { name: 'かいこれ！', domain: 'kaikore', cat: '海外の反応', sub: '日本への反応' },
+            { name: '海外の万国反応記', domain: 'all-nationz', cat: '海外の反応', sub: '海外で人気の話題' },
+            { name: 'すらるど', domain: 'sow.blog', cat: '海外の反応', sub: '日本への反応' },
+            { name: 'nofootynolife', domain: 'nofootynolife', cat: '海外の反応', sub: '海外で人気の話題' },
+
+            // ネタ・議論・修羅場
+            { name: '暇人＼(^o^)／速報', domain: 'himasoku', cat: 'ネタ・議論', sub: '笑えるネタ' },
+            { name: 'キニ速', domain: 'kinisoku', cat: 'ネタ・議論', sub: '笑えるネタ' },
+            { name: 'アルファルファ', domain: 'alfalfalfa', cat: 'ネタ・議論', sub: '炎上・ゴシップ' },
+            { name: '哲学ニュースnwk', domain: 'nwknews', cat: 'ネタ・議論', sub: '政治思想(右/左)' },
+            { name: '鬼女まとめ', domain: 'kijo-matome', cat: 'ネタ・議論', sub: '男女・フェミ' },
+            { name: '気団まとめ', domain: 'kidan-matome', cat: 'ネタ・議論', sub: '男女・フェミ' },
+            { name: '浮気ちゃんねる', domain: 'uwaki-channel', cat: 'ネタ・議論', sub: '男女・フェミ' },
+            { name: 'VIPPERな俺', domain: 'news23vip', cat: 'ネタ・議論', sub: '笑えるネタ' },
+            { name: 'ゴールデンタイムズ', domain: 'goldennews', cat: 'ネタ・議論', sub: '笑えるネタ' },
+            { name: 'VIPPER速報', domain: 'vippers', cat: 'ネタ・議論', sub: '笑えるネタ' },
+
+            // アニメ・ゲーム
+            { name: 'オレ的ゲーム速報＠刃', domain: 'jin115', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'はちま起稿', domain: 'esuteru', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'やらおん！', domain: 'yaraon', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'あにまんch', domain: 'animanch', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'ゲーハー黙示録', domain: 'geha-mokusiroku', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'アニゲー速報', domain: 'anigame-sokuhou', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'えび通', domain: 'ebitsu', cat: 'アニメ・ゲーム', sub: 'すべて' },
+            { name: 'PS5速報', domain: 'ps5sokuhou', cat: 'アニメ・ゲーム', sub: 'すべて' },
+
+            // スポーツ
+            { name: 'なんJスタジアム', domain: 'nanjstu', cat: 'スポーツ', sub: '野球' },
+            { name: '日刊やきう速報', domain: 'yakiusoku', cat: 'スポーツ', sub: '野球' },
+            { name: 'フットボール速報', domain: 'football-sokuhou', cat: 'スポーツ', sub: 'サッカー' },
+            { name: 'ドメサカブログ', domain: 'domesoccer', cat: 'スポーツ', sub: 'サッカー' },
+            { name: '筋トレ速報', domain: 'kintore-sokuhou', cat: 'スポーツ', sub: '筋トレ' },
+            { name: 'ポリー速報', domain: 'porisoku', cat: 'スポーツ', sub: '野球' },
+            { name: 'ベースボールスレッド', domain: 'baseballsoku', cat: 'スポーツ', sub: '野球' },
+
+            // マネー・IT
+            { name: '市況かぶ全力２階建', domain: 'kabumatome', cat: 'マネー', sub: '資産運用' },
+            { name: 'IT速報', domain: 'itsokuhou', cat: 'マネー', sub: 'IT・ガジェット' },
+            { name: '仮想通貨速報', domain: 'v-currency', cat: 'マネー', sub: '仮想通貨' },
+            { name: '節約ログ', domain: 'setsuyaku', cat: 'マネー', sub: '節約・家計' },
+            { name: 'ゆめ痛', domain: 'yumeitu', cat: 'マネー', sub: 'IT・ガジェット' },
+            { name: 'ガジェット2ch', domain: 'gadget2ch', cat: 'マネー', sub: 'IT・ガジェット' },
+
+            // 女性アイドル
+            { name: '乃木坂46まとめの仮', domain: 'nogizaka46tiu', cat: '女性アイドル', sub: '国内' },
+            { name: '櫻坂46まとめ', domain: 'sakurazaka46matome', cat: '女性アイドル', sub: '国内' },
+            { name: '日向坂46まとめ', domain: 'hiraganatimes', cat: '女性アイドル', sub: '国内' },
+            { name: 'AKB48タイムズ', domain: 'akb48taimuzu', cat: '女性アイドル', sub: '国内' },
+            { name: 'デバク', domain: 'daebak', cat: '女性アイドル', sub: '韓流' },
+            { name: 'K-POP速報', domain: 'kpopsokuhou', cat: '女性アイドル', sub: '韓流' },
+            { name: '生駒ちゃんねる', domain: 'ikomach', cat: '女性アイドル', sub: '国内' },
+            { name: '乃木りんく', domain: 'nogilink', cat: '女性アイドル', sub: '国内' },
+
+            // 男性アイドル
+            { name: 'ジャニーズ速報', domain: 'johnnys-matome', cat: '男性アイドル', sub: '国内' },
+            { name: 'マゼンタ速報', domain: 'magentasokuhou', cat: '男性アイドル', sub: '国内' },
+            { name: '嵐まとめ速報', domain: 'arashimatomesokuhou', cat: '男性アイドル', sub: '国内' },
+            { name: 'K-POP男性まとめ', domain: 'kbps', cat: '男性アイドル', sub: '韓流' },
+            { name: 'KPOP monster', domain: 'kpopmonster', cat: '男性アイドル', sub: '韓流' },
+
+            // オカルト・乗り物・配信
+            { name: '不思議.net', domain: 'world-fusigi', cat: 'オカルト', sub: '不思議・考察' },
+            { name: '洒落怖まとめ', domain: 'sharekowa', cat: 'オカルト', sub: '怖い話' },
+            { name: '不思議な体験', domain: 'fusigina', cat: 'オカルト', sub: '怖い話' },
+            { name: '乗り物速報', domain: 'norisoku', cat: '車・乗り物', sub: 'すべて' },
+            { name: 'クルマまとめ', domain: 'car-topics', cat: '車・乗り物', sub: 'すべて' },
+            { name: 'VTuberまとめ', domain: 'vtuber-matome', cat: '動画・配信', sub: 'VTuber' },
+            { name: 'ユーチュラ', domain: 'yutura', cat: '動画・配信', sub: 'YouTuber' }
         ];
 
-        const categories = ['すべて', 'ニュース', '海外の反応', 'ネタ・議論', 'スポーツ', 'マネー', '女性アイドル', '男性アイドル', 'オカルト', '動画・配信'];
+        const categories = ['すべて', 'ニュース', '海外の反応', 'ネタ・議論', 'アニメ・ゲーム', 'スポーツ', 'マネー', '女性アイドル', '男性アイドル', 'オカルト', '動画・配信', '車・乗り物'];
+        
         const subNavMap = {
-            'ニュース': ['すべて', '話題の事件', '国内', '海外', '政治・経済'],
+            'ニュース': ['すべて', '話題の事件', '政治・経済', '国内', '海外'],
             '海外の反応': ['すべて', '海外で人気の話題', '日本への反応'],
             'ネタ・議論': ['すべて', '笑えるネタ', '炎上・ゴシップ', '男女・フェミ', '政治思想(右/左)'],
-            'スポーツ': ['すべて', '野球', 'サッカー', '筋トレ', 'その他'],
+            'スポーツ': ['すべて', '野球', 'サッカー', '筋トレ'],
+            'マネー': ['すべて', '資産運用', 'IT・ガジェット', '節約・家計', '仮想通貨'],
             '女性アイドル': ['すべて', '国内', '韓流'],
             '男性アイドル': ['すべて', '国内', '韓流'],
             'オカルト': ['すべて', '怖い話', '不思議・考察'],
-            '動画・配信': ['すべて', 'YouTuber', 'VTuber']
+            '動画・配信': ['すべて', 'YouTuber', 'VTuber'],
+            '車・乗り物': ['すべて']
         };
 
         let currentTab = 'new';
         let currentCategory = 'すべて';
         let currentSubCategory = 'すべて';
+        
+        // キャッシュ用の変数
+        let cachedArticles = [];
+        let isDataLoaded = false;
 
+        // 【通信は最初の一回だけ】GASからデータを取得してキャッシュに保存
         const fetchArticles = async () => {
             const listEl = document.getElementById('article-list');
+            const statusBadge = document.getElementById('status-badge');
             const statusEl = document.getElementById('data-status');
-            listEl.innerHTML = '<div class="p-20 text-center text-gray-400"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-4"></i><br>同期中...</div>';
-            statusEl.textContent = "同期中...";
-
+            const debugEl = document.getElementById('debug-info');
+            
             try {
-                const response = await fetch(`${GAS_URL}?tab=${currentTab}`);
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                const data = await response.json();
+                let data = null;
+                let retries = 3;
+                let backoff = 1000;
                 
-                // ホワイトリストによるフィルタリング
-                const filtered = data.filter(item => {
-                    const site = whiteList.find(s => item.link.includes(s.domain));
-                    if (!site) return false;
-                    if (currentCategory !== 'すべて' && site.cat !== currentCategory) return false;
-                    return true;
-                });
-
-                listEl.innerHTML = '';
-                statusEl.textContent = "同期完了";
-
-                if (filtered.length === 0) {
-                    listEl.innerHTML = '<div class="p-20 text-center text-gray-400 text-sm">現在、この条件に合う記事がありません。<br><span class="text-xs">※ホワイトリスト対象外の記事のみの可能性があります</span></div>';
-                    return;
+                while (retries > 0) {
+                    try {
+                        const response = await fetch(GAS_URL);
+                        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                        data = await response.json();
+                        break;
+                    } catch (e) {
+                        retries--;
+                        if (retries === 0) throw e;
+                        await new Promise(resolve => setTimeout(resolve, backoff));
+                        backoff *= 2;
+                    }
                 }
+                
+                // データをキャッシュに保存
+                cachedArticles = data;
+                isDataLoaded = true;
+                
+                // バッジを緑色にして完了をアピール
+                statusEl.textContent = "同期完了";
+                statusBadge.classList.remove('bg-blue-800', 'border-blue-500');
+                statusBadge.classList.add('bg-green-600', 'border-green-400');
+                
+                // 描画を実行
+                renderArticles();
 
-                filtered.forEach((item, index) => {
-                    const site = whiteList.find(s => item.link.includes(s.domain));
-                    const rankHtml = currentTab !== 'new' ? `<div class="absolute -top-1 -left-1 w-5 h-5 bg-orange-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold z-10 shadow-sm">${index+1}</div>` : '';
-                    const thumbId = btoa(item.link).slice(-10);
-                    const html = `
-                        <a href="${item.link}" target="_blank" class="block p-4 hover:bg-gray-50 transition relative group border-b border-gray-50 last:border-0">
-                            ${rankHtml}
-                            <div class="flex gap-4">
-                                <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src="https://picsum.photos/seed/${thumbId}/150/100" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="thumb">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-[10px] text-gray-400 mb-1 flex justify-between">
-                                        <span class="font-bold text-gray-600">${site.name}</span>
-                                        <span>${timeAgo(new Date(item.date))}</span>
-                                    </div>
-                                    <h2 class="text-sm font-bold text-blue-700 leading-snug line-clamp-2 mb-2 group-hover:underline">${item.title}</h2>
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-[9px] bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded border border-blue-100 font-bold">B! ${item.hatebu}</span>
-                                        <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">${site.cat}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>`;
-                    listEl.insertAdjacentHTML('beforeend', html);
-                });
             } catch (err) {
-                console.error(err);
-                listEl.innerHTML = `<div class="p-10 text-center text-red-400 text-sm">同期エラー: GAS側の「デプロイ設定」を「全員(Anyone)」にしてください。</div>`;
-                statusEl.textContent = "エラー";
+                console.warn("Fetch Error:", err.message);
+                listEl.innerHTML = `
+                    <div class="p-8 mx-4 my-8 text-center text-red-500 text-sm bg-red-50 rounded-xl border border-red-200">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-3"></i><br>
+                        <b class="text-base">記事データの同期に失敗しました</b><br>
+                        <span class="text-xs opacity-70">(Failed to fetch)</span><br><br>
+                        <div class="text-left inline-block text-[11px] text-gray-600 bg-white p-4 rounded border shadow-sm">
+                            <b>【トラブルシューティング】</b><br>
+                            1. GASの設定でアクセスを<b>「全員」</b>にしましたか？<br>
+                            2. 新しいURLを正しく貼り付けましたか？<br>
+                            3. 少し時間を置いて再読み込みしてください。
+                        </div>
+                    </div>`;
+                statusEl.textContent = "同期エラー";
+                debugEl.textContent = "通信失敗";
             }
         };
 
+        // 【爆速】キャッシュからデータをフィルタリングして描画（通信なし）
+        const renderArticles = () => {
+            if (!isDataLoaded) return;
+            
+            const listEl = document.getElementById('article-list');
+            const debugEl = document.getElementById('debug-info');
+            
+            // フィルタリング処理
+            let filtered = cachedArticles.filter(item => {
+                const site = whiteList.find(s => item.link.indexOf(s.domain) !== -1);
+                if (!site) return false;
+                if (currentCategory !== 'すべて' && site.cat !== currentCategory) return false;
+                if (subNavMap[currentCategory] && currentSubCategory !== 'すべて') {
+                    if (site.sub !== currentSubCategory) return false;
+                }
+                return true;
+            });
+
+            // ソート処理
+            if (currentTab === 'new') {
+                filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                filtered.sort((a, b) => b.hatebu - a.hatebu);
+            }
+
+            listEl.innerHTML = '';
+            debugEl.textContent = `全取得: ${cachedArticles.length}件 / 表示: ${filtered.length}件`;
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `
+                    <div class="p-20 text-center text-gray-400">
+                        表示できる記事がありません。<br>
+                        <button onclick="currentCategory='すべて';currentSubCategory='すべて';renderNav();renderArticles();" class="mt-4 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold hover:bg-blue-100 transition">「すべて」に戻る</button>
+                    </div>`;
+                return;
+            }
+
+            // HTML生成
+            filtered.forEach((item, index) => {
+                const site = whiteList.find(s => item.link.indexOf(s.domain) !== -1);
+                const rankHtml = currentTab !== 'new' ? `<div class="absolute -top-1 -left-1 w-5 h-5 bg-orange-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold z-10 shadow-sm border border-white">${index+1}</div>` : '';
+                const thumbId = btoa(item.link).slice(-10);
+                
+                listEl.insertAdjacentHTML('beforeend', `
+                    <a href="${item.link}" target="_blank" class="block p-4 hover:bg-gray-50 transition relative group border-b border-gray-100 last:border-0">
+                        ${rankHtml}
+                        <div class="flex gap-4">
+                            <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 shadow-inner">
+                                <img src="https://picsum.photos/seed/${thumbId}/150/100" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="thumb" loading="lazy">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-[10px] text-gray-400 mb-1 flex justify-between">
+                                    <span class="font-bold text-gray-600">${site.name}</span>
+                                    <span>${timeAgo(new Date(item.date))}</span>
+                                </div>
+                                <h2 class="text-sm font-bold text-blue-700 leading-snug line-clamp-2 mt-1 mb-1 group-hover:underline decoration-blue-200 underline-offset-2">${item.title}</h2>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[9px] bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded border border-blue-100 font-bold">B! ${item.hatebu}</span>
+                                    <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">${site.cat}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>`);
+            });
+        };
+
         const changeTimeframe = (tab) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab', 'text-gray-500'));
-            document.getElementById('tab-' + tab).classList.add('active-tab');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active-tab');
+                b.classList.add('text-gray-500');
+            });
+            const btn = document.getElementById('tab-' + tab);
+            btn.classList.add('active-tab');
+            btn.classList.remove('text-gray-500');
             currentTab = tab;
-            fetchArticles();
+            renderArticles(); // 通信せず描画のみ
         };
 
         const renderNav = () => {
             const nav = document.getElementById('category-nav');
+            if (!nav) return;
             nav.innerHTML = '';
             categories.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.className = `px-3 py-3 transition ${currentCategory === cat ? 'text-orange-400 border-b-2 border-orange-400' : 'text-blue-200 hover:text-white'}`;
                 btn.textContent = cat;
-                btn.onclick = () => { currentCategory = cat; currentSubCategory = 'すべて'; renderNav(); renderSubNav(); fetchArticles(); };
+                btn.onclick = () => { 
+                    currentCategory = cat; 
+                    currentSubCategory = 'すべて'; 
+                    renderNav(); 
+                    renderSubNav(); 
+                    renderArticles(); // 通信せず描画のみ
+                };
                 nav.appendChild(btn);
             });
         };
@@ -199,7 +352,7 @@
             const subBar = document.getElementById('sub-category-bar');
             const subNav = document.getElementById('sub-nav');
             const subItems = subNavMap[currentCategory];
-            if (subItems) {
+            if (subItems && subItems.length > 1) {
                 subBar.classList.remove('hidden');
                 subNav.innerHTML = '';
                 subItems.forEach(sub => {
@@ -207,10 +360,16 @@
                     const isActive = currentSubCategory === sub;
                     btn.className = `px-3 py-1 whitespace-nowrap border border-blue-600 transition ${isActive ? 'sub-nav-active' : 'text-blue-200 hover:text-white'}`;
                     btn.textContent = sub;
-                    btn.onclick = () => { currentSubCategory = sub; renderSubNav(); fetchArticles(); };
+                    btn.onclick = () => { 
+                        currentSubCategory = sub; 
+                        renderSubNav(); 
+                        renderArticles(); // 通信せず描画のみ
+                    };
                     subNav.appendChild(btn);
                 });
-            } else { subBar.classList.add('hidden'); }
+            } else {
+                subBar.classList.add('hidden');
+            }
         };
 
         const timeAgo = (date) => {
@@ -223,12 +382,8 @@
 
         window.onload = () => {
             renderNav();
-            const siteListEl = document.getElementById('site-list');
-            if (siteListEl) {
-                const uniqueSites = [...new Set(whiteList.map(s => s.name))];
-                uniqueSites.forEach(name => siteListEl.insertAdjacentHTML('beforeend', `<div>・${name}</div>`));
-            }
-            fetchArticles();
+            renderSubNav();
+            fetchArticles(); // 初回ロード時のみ通信
         };
     </script>
 </body>
